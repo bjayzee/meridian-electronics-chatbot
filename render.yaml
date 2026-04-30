@@ -1,0 +1,26 @@
+# Render Blueprint — https://docs.render.com/docs/blueprint-spec
+# After connecting this repo: New → Blueprint → select this repo (apply render.yaml).
+# Add OPENAI_API_KEY under Environment before expecting chat to work.
+
+services:
+  - type: web
+    name: meridian-support-bot
+    runtime: docker
+    region: oregon
+    # Omit `plan` to choose instance type in the dashboard, or use `free` / `starter`, etc.
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      # Required — create in dashboard: Environment → Environment Variables
+      - key: OPENAI_API_KEY
+        sync: false
+      # Optional overrides (defaults are set in meridian_support/config.py)
+      - key: MCP_SERVER_URL
+        sync: false
+      - key: OPENAI_MODEL
+        sync: false
+      # Streamlit → FastAPI inside the same container (docker-entrypoint.sh)
+      - key: MERIDIAN_API_URL
+        value: http://127.0.0.1:8000
